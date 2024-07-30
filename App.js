@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import FormularioModal from './src/components/formularioModal';
@@ -8,8 +8,9 @@ import { getClients } from './src/services/clientService';
 
 export default function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const [clientes, setClientes] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [list, setList] = useState([]);
 
   const optionsModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -34,6 +35,26 @@ export default function App() {
       console.error('An error occurred while loading clients:', error);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getClients();
+        if (response) {
+          const filteredClients = response.filter((client) =>
+            client.name.toLowerCase().includes(searchText.toLowerCase())
+          );
+          setClientes(filteredClients);
+        } else {
+          console.error('Failed to load clients');
+        }
+      } catch (error) {
+        console.error('An error occurred while loading clients:', error);
+      }
+    };
+
+    fetchData();
+  }, [searchText]);
 
   return (
     <View style={styles.container}>
