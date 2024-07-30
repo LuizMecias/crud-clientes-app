@@ -5,12 +5,12 @@ import FormularioModal from './src/components/formularioModal';
 import styles from './style/MainStyle';
 import ClientTable from './src/components/clientTable';
 import { getClients } from './src/services/clientService';
+import { searchClient } from './src/services/clientService';
 
 export default function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [clientes, setClientes] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [list, setList] = useState([]);
 
   const optionsModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -39,12 +39,9 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getClients();
+        const response = await searchClient(searchText);
         if (response) {
-          const filteredClients = response.filter((client) =>
-            client.name.toLowerCase().includes(searchText.toLowerCase())
-          );
-          setClientes(filteredClients);
+          setClientes(response);
         } else {
           console.error('Failed to load clients');
         }

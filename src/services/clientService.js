@@ -41,3 +41,17 @@ export const deleteClient = async (cpf) => {
     throw error;
   }
 };
+
+export const searchClient = async (searchText) => {
+  try {
+    const response = await axios.get(`${apiUrl}/buscar`, {
+      params: {
+        searchText,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
